@@ -14,7 +14,7 @@ export default function SignUpForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +26,7 @@ export default function SignUpForm() {
         setError(null); // Reset error state
 
         try {
-            const response = await axios.post(REGISTER_URL, {
+            await axios.post(REGISTER_URL, {
                 first_name: firstName,
                 last_name: lastName,
                 email,
@@ -35,28 +35,28 @@ export default function SignUpForm() {
             // Redirect to the dashboard
             navigate("/");
         } catch (error: any) {
-            // Check if error has response and response data
+            // Handle the error properly
             if (error.response && error.response.data) {
                 const errorData = error.response.data;
         
-                // Display each error message from the backend
+                // Use the errorData to display error messages
                 if (typeof errorData === 'object') {
-                    for (const [key, value] of Object.entries(errorData)) {
+                    let errorMessages = [];
+                    for (const [, value] of Object.entries(errorData)) {
                         if (Array.isArray(value)) {
-                            // If the value is an array, join the error messages
-                            alert(`${value.join(', ')}`)
+                            errorMessages.push(`${value.join(', ')}`);
                         } else {
-                            // Otherwise, display the message directly
-                            alert(`${value}`)
+                            errorMessages.push(`${value}`);
                         }
                     }
+                    setError(errorMessages.join(' ')); // Set all error messages together
                 } else {
-                    // If the error data is not in expected format, display a generic error
-                    alert("An error occurred. Please try again.")
+                    // Handle generic error
+                    setError("An error occurred. Please try again.");
                 }
             } else {
-                // If no response data, display a generic error message
-                alert("An error occurred. Please try again.")
+                // Handle if no response data is present
+                setError("An error occurred. Please try again.");
             }
         } finally {
             setLoading(false); // Stop loading spinner
@@ -177,6 +177,13 @@ export default function SignUpForm() {
                 </div>
               </div>
             </form>
+
+            {/* Display error message if login fails */}
+            {error && (
+                <div className="mt-3 text-red-500 text-sm">
+                    {error}
+                </div>
+            )}
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
