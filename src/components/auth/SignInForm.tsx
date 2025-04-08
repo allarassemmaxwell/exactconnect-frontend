@@ -16,7 +16,7 @@ export default function SignInForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
   
   const onSubmit = async (e: React.FormEvent) => {
@@ -52,7 +52,7 @@ export default function SignInForm() {
         });
         navigate("/");
     } catch (err) {
-        alert("Login failed. Please check your credentials and try again.")
+        setError("Login failed. Please check your credentials and try again.");
     } finally {
         setLoading(false); // Stop loading spinner
     }
@@ -133,6 +133,13 @@ export default function SignInForm() {
                 </div>
               </div>
             </form>
+
+            {/* Display error message if login fails */}
+            {error && (
+                <div className="mt-3 text-red-500 text-sm">
+                    {error}
+                </div>
+            )}
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
