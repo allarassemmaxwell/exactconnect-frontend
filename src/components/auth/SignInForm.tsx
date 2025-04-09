@@ -8,6 +8,8 @@ import Button from "../ui/button/Button";
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import axios from "axios";
 import { LOGIN_URL, LOADING } from "../../constant";
+import { toast } from 'react-toastify';
+
 
 export default function SignInForm() {
     const signIn = useSignIn();
@@ -16,18 +18,13 @@ export default function SignInForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
   
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null); // Reset error state
 
     try {
-        console.log(email);
-        console.log(password);
-        
         // Send login request to API
         const response = await axios.post(LOGIN_URL, {
             email,
@@ -44,17 +41,17 @@ export default function SignInForm() {
                 token: access,
                 type: "Bearer",
             },
-            // refresh: refresh,
             userState: {
                 email: email,
                 name: `${first_name} ${last_name}`,
             },
+            // refresh: refresh,
         });
         navigate("/");
     } catch (err) {
-        setError("Login failed. Please check your credentials and try again.");
+        toast.error("Login failed. Please check your credentials and try again.");
     } finally {
-        setLoading(false); // Stop loading spinner
+        setLoading(false);
     }
 };
 
@@ -133,13 +130,6 @@ export default function SignInForm() {
                 </div>
               </div>
             </form>
-
-            {/* Display error message if login fails */}
-            {error && (
-                <div className="mt-3 text-red-500 text-sm">
-                    {error}
-                </div>
-            )}
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">

@@ -6,24 +6,23 @@ import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import axios from "axios";
 import { REGISTER_URL, LOADING } from "../../constant";
+import { toast } from 'react-toastify';
+
+
 
 export default function SignUpForm() {
-
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [isChecked, setIsChecked] = useState(false);
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError(null); // Reset error state
 
         try {
             await axios.post(REGISTER_URL, {
@@ -34,32 +33,33 @@ export default function SignUpForm() {
             });
             // Redirect to the dashboard
             navigate("/");
+            toast.success("Registration successful! Please log in to continue.");
         } catch (error: any) {
             // Handle the error properly
             if (error.response && error.response.data) {
                 const errorData = error.response.data;
-        
+            
                 // Use the errorData to display error messages
                 if (typeof errorData === 'object') {
-                    let errorMessages = [];
-                    for (const [, value] of Object.entries(errorData)) {
+                    for (const [key, value] of Object.entries(errorData)) {
                         if (Array.isArray(value)) {
-                            errorMessages.push(`${value.join(', ')}`);
+                            // If the value is an array, join the array items and display them in the toast
+                            toast.error(`${key} - ${value.join(', ')}`);
                         } else {
-                            errorMessages.push(`${value}`);
+                            // If the value is not an array, directly display the message
+                            toast.error(`${key} - ${value}`);
                         }
                     }
-                    setError(errorMessages.join(' ')); // Set all error messages together
                 } else {
-                    // Handle generic error
-                    setError("An error occurred. Please try again.");
+                    // Handle generic error when errorData is not an object
+                    toast.error("An error occurred. Please try again.");
                 }
             } else {
                 // Handle if no response data is present
-                setError("An error occurred. Please try again.");
-            }
+                toast.error("An error occurred. Please try again.");
+            }            
         } finally {
-            setLoading(false); // Stop loading spinner
+            setLoading(false);
         }
     };
 
@@ -95,8 +95,8 @@ export default function SignUpForm() {
                     </Label>
                     <Input
                       type="text"
-                      id="fname"
-                      name="fname"
+                      id="firstName"
+                      name="firstName"
                       placeholder="Enter your first name"
                       value={firstName} onChange={(e) => setFirstName(e.target.value)}
                     />
@@ -108,8 +108,8 @@ export default function SignUpForm() {
                     </Label>
                     <Input
                       type="text"
-                      id="lname"
-                      name="lname"
+                      id="lastName"
+                      name="lastName"
                       placeholder="Enter your last name"
                       value={lastName} onChange={(e) => setLastName(e.target.value)}
                     />
@@ -177,13 +177,6 @@ export default function SignUpForm() {
                 </div>
               </div>
             </form>
-
-            {/* Display error message if login fails */}
-            {error && (
-                <div className="mt-3 text-red-500 text-sm">
-                    {error}
-                </div>
-            )}
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
