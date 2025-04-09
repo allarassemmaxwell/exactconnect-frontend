@@ -7,7 +7,7 @@ export default function index() {
   return (
     <>
       <PageMeta
-        title=""
+        title="Products | Exact Connect"
         description=""
       />
       <PageBreadcrumb pageTitle="Products" />

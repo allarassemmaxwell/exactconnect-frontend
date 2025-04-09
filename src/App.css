@@ -1,0 +1,6 @@
+.Toastify__toast-container {
+  z-index: 2147483647 !important;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}

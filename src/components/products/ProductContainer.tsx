@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-// import axios from 'axios';
 import axiosInstance from '../../utils/axiosInstance';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "../ui/table";
 import { PRODUCTS_URL } from '../../constant';
@@ -61,7 +60,7 @@ export default function ProductContainer() {
           type="text"
           value={searchTerm}
           onChange={handleSearchChange}
-          placeholder="Search products by title or description"
+          placeholder="Search Products by Name or Price"
           className="p-2 border border-gray-300 rounded-lg w-full"
         />
       </div>
@@ -76,13 +75,7 @@ export default function ProductContainer() {
                   isHeader
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Image
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Title
+                  Product Name
                 </TableCell>
 
                 <TableCell
@@ -104,15 +97,6 @@ export default function ProductContainer() {
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {filteredProducts.map((product) => (
                 <TableRow key={product.id}>
-                  <TableCell className="px-5 py-4 sm:px-6 text-start">
-                    <img
-                      width={40}
-                      height={40}
-                      src={product.image}
-                      alt={product.title}
-                      className="w-10 h-10 object-cover"
-                    />
-                  </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {product.title}
                   </TableCell>
